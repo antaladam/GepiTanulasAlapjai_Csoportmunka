@@ -1,0 +1,13 @@
+# Raw data (SUPPORT2 CSV): downloaded by scripts/download_data.py, not committed
+data/raw/
+# data/processed/ IS committed: cleaned data and splits
+
+# Python environment and caches
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.cache/
+
+# Secrets
+.env
