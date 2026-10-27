@@ -204,7 +204,7 @@ Mind a `data/processed/` mappában:
 | Fájl | Betegek | Tartalom | Mire való |
 |---|---|---|---|
 | `support2_clean.csv` | 9 105 | azonosító, `hospdead`, 29 jellemző a 4. fejezet szerint; a megmaradt hiányok üresek, a kategóriák szövegként | Az adatok bemutatása (táblázatok, ábrák, hiányzó értékek) |
-| `train.csv` | 6 828 | azonosító, `hospdead`, 42 jellemzőoszlop; hiányok kitöltve, one-hot kódolva, **nem skálázva** | Döntési fák, véletlen erdő, boosting |
+| `train.csv` | 6 828 | azonosító, `hospdead`, 42 jellemzőoszlop; hiányok kitöltve, one-hot kódolva, **nem skálázva** | Döntési fák, random forest|
 | `test.csv` | 2 277 | ugyanaz, mint a `train.csv` | A modellek végső kiértékelésére |
 | `train_scaled.csv` | 6 828 | ugyanaz, mint a `train.csv`, de a 23 mért numerikus oszlop **standardizálva** (a 0/1 oszlopok változatlanok) | Logisztikus regresszió, kNN, SVM, perceptron/MLP |
 | `test_scaled.csv` | 2 277 | ugyanaz, mint a `train_scaled.csv` | A modellek végső kiértékelésére |
