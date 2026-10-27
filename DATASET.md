@@ -22,8 +22,11 @@ python scripts/prepare_data.py
 - **Vizsgálat:** SUPPORT (Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments). Súlyos állapotú, kórházban kezelt felnőtt betegek 5 amerikai egészségügyi központból. 
                  Az I. fázis (1989–1991) prospektív megfigyeléses vizsgálat volt, a II. fázis (1992–1994) egy ápolók által vezetett beavatkozás kontrollált vizsgálata. 
 				 Az adatok kórlapokból, interjúkból, kérdőívekből és az amerikai Nemzeti Halálozási Indexből (National Death Index) származnak.
-- **Bemutató cikk:** The SUPPORT Principal Investigators, *JAMA* 1995;274(20):1591–1598.
-- **Licenc:** a UCI az eredeti forrásra hivatkozik; az adatkészletet a hbiostat.org oldalon leírt módon kell feltüntetni és hivatkozni.
+- **Bemutató cikk:** The SUPPORT Principal Investigators. A controlled trial to improve care for seriously ill hospitalized patients: the Study to Understand Prognoses and Preferences for Outcomes and Risks of Treatments (SUPPORT). *JAMA* 1995;274(20):1591–1598.
+- **Licenc:** a UCI az eredeti forrásra hivatkozik. A hbiostat.org/data oldal szerint az adatkészletet bárki szabadon használhatja („Permission is granted to anyone wishing to use the data sets provided here.”), ha hivatkozik az eredeti cikkre (lásd fent), és feltünteti a következő mondatot:
+
+  > Data obtained from http://hbiostat.org/data courtesy of the Vanderbilt University Department of Biostatistics.
+
 - **Méret:** 9 105 beteg (sor), 48 oszlop. A `scripts/download_data.py` SHA-256 ellenőrzőösszeggel ellenőrzi, hogy mindenki pontosan ugyanazt a fájlt használja.
 
 A UCI metaadatai szerint az adatkészletben nincs hiányzó érték, valójában azonban sok van; az oszloponkénti számok a 3. fejezetben szerepelnek.
