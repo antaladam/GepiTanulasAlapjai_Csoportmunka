@@ -6,6 +6,8 @@ Input:
     data/processed/train.csv, data/processed/test.csv   (unscaled: trees need no scaling)
 Result, in results/decision_tree/:
     cv_results.csv            every setting tried, with mean train and cross-validation AUROC
+    leaf_limit_summary.csv    per min_samples_leaf (unlimited depth): number of leaves, train
+                              and cross-validation AUROC, and the gap between them
     test_metrics.csv          final test results of the chosen tree (with and without class weights)
     complexity_curve.png      train vs cross-validation AUROC by tree depth
     tree_top3.png             the top 3 levels of the chosen tree
@@ -72,6 +74,23 @@ def test_metrics(name, model, X, y):
         "f1": f1_score(y, pred),
         "tn": tn, "fp": fp, "fn": fn, "tp": tp,
     }
+
+
+def leaf_limit_summary(cv, X, y):
+    """How the leaf limit alone changes tree size and scores (depth unlimited)."""
+    rows = []
+    for leaf in PARAM_GRID["min_samples_leaf"]:
+        r = cv[(cv["param_min_samples_leaf"] == leaf) & cv["param_max_depth"].isna()].iloc[0]
+        tree = DecisionTreeClassifier(min_samples_leaf=leaf, random_state=SEED).fit(X, y)
+        rows.append({
+            "min_samples_leaf": leaf,
+            "leaves": tree.get_n_leaves(),
+            "depth": tree.get_depth(),
+            "train_auroc": r["mean_train_score"],
+            "cv_auroc": r["mean_test_score"],
+            "gap": r["mean_train_score"] - r["mean_test_score"],
+        })
+    return pd.DataFrame(rows)
 
 
 def style(ax):
@@ -161,6 +180,7 @@ def main():
                                     "mean_train_score": "train_auroc", "mean_test_score": "cv_auroc",
                                     "std_test_score": "cv_auroc_std", "rank_test_score": "rank"})
     cv_out.sort_values("rank").to_csv(OUT / "cv_results.csv", index=False)
+    leaf_limit_summary(cv, X_train, y_train).round(4).to_csv(OUT / "leaf_limit_summary.csv", index=False)
 
     metrics = pd.DataFrame([
         test_metrics("tree", plain.best_estimator_, X_test, y_test),

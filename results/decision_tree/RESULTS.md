@@ -37,6 +37,7 @@ Ez a változat a saját legjobb beállítását kapja a keresztvalidációból.
 | Fájl | Tartalom |
 |---|---|
 | `cv_results.csv` | Mind a 63 beállítás: átlagos tanító és keresztvalidációs AUROC, a keresztvalidációs AUROC szórása, rangsor |
+| `leaf_limit_summary.csv` | Levélkorlátonként (korlátlan mélységnél): a fa leveleinek száma és mélysége, a tanító és a keresztvalidációs AUROC, valamint a kettő különbsége |
 | `test_metrics.csv` | A két kiválasztott fa (súlyozás nélkül és súlyozva) eredménye a teszthalmazon, a tévesztési mátrix négy értékével |
 | `complexity_curve.png` | Tanító és keresztvalidációs AUROC a fa mélysége szerint, két panelen: levélkorlát nélkül és a kiválasztott levélkorláttal |
 | `tree_top3.png` | A kiválasztott fa felső 3 szintje |
@@ -71,7 +72,29 @@ Tanító és keresztvalidációs AUROC a mélység szerint (`complexity_curve.pn
 | Levélkorlát 200: tanító | 0,768 | 0,819 | 0,834 | 0,842 | 0,846 | 0,848 | 0,848 | 0,848 | 0,848 |
 | Levélkorlát 200: keresztvalidáció | 0,764 | 0,816 | 0,826 | 0,830 | 0,832 | 0,832 | 0,832 | 0,832 | 0,832 |
 
-### 2.3 Eredmények a teszthalmazon
+### 2.3 Miért éppen 200 betegnyi levélkorlát?
+
+A levélkorlát határozza meg, mekkora lehet a fa: minél kisebb a korlát, annál több levelet hozhat létre. 
+A táblázat korlátlan mélységnél mutatja, hogyan változik a fa mérete és a pontszám a levélkorláttal (`leaf_limit_summary.csv`; a levelek száma a teljes tanító halmazon illesztett fára vonatkozik):
+
+| `min_samples_leaf` | Levelek | Mélység | Tanító AUROC | Keresztvalidációs AUROC | Különbség |
+|---|---|---|---|---|---|
+| 1 | 866 | 24 | 1,000 | 0,665 | 0,335 |
+| 10 | 330 | 19 | 0,946 | 0,758 | 0,188 |
+| 25 | 166 | 16 | 0,905 | 0,803 | 0,101 |
+| 50 | 97 | 14 | 0,881 | 0,822 | 0,059 |
+| 100 | 49 | 12 | 0,862 | 0,827 | 0,035 |
+| **200** | **26** | **9** | **0,848** | **0,832** | **0,015** |
+| 400 | 13 | 6 | 0,831 | 0,821 | 0,009 |
+
+- **200 alatt túlillesztés:** minél kisebb a korlát, annál nagyobb a fa, annál jobb a tanító pontszám, de annál rosszabb a keresztvalidációs érték. 
+  Az extra levelek egyes tanító betegeket „magolnak be”, nem új betegekre is érvényes mintázatokat. 1-es korlátnál egy levélre átlagosan kb. 8 beteg jut, és a keresztvalidációs AUROC 0,665-re esik. 
+  A tanító és a keresztvalidációs pontszám közötti különbség (az utolsó oszlop) a túlillesztés legtisztább jele.
+- **200 felett alulillesztés:** 400-as korlátnál már mindkét pontszám csökken. A 13 levelű fa túl durva: csak 13 különböző kockázati szintet tud adni, és nem tudja elkülöníteni a kis, nagyon magas kockázatú csoportokat. 
+  A legmagasabb halálozási arány egy levélben 200-as korlátnál 91%, 400-asnál csak 81%.
+- **200 a görbe csúcsa:** a két hatás között itt a legmagasabb a keresztvalidációs AUROC, ezért ezt választotta a keresztvalidáció. A 100-as korlát szinte ugyanilyen jó (0,827), vagyis nem a pontos érték számít, hanem hogy a korlát ebben a tartományban legyen.
+
+### 2.4 Eredmények a teszthalmazon
 
 A teszthalmazban 2 277 beteg van, ebből 590 halt meg a kórházban (25,9%).
 
@@ -89,7 +112,7 @@ Tévesztési mátrixok a teszthalmazon:
 | Meghalt, túlélőnek jelezve (FN, kihagyott eset) | 266 | 142 |
 | Meghalt, halálozásnak jelezve (TP) | 324 | 448 |
 
-### 2.4 A legfontosabb jellemzők
+### 2.5 A legfontosabb jellemzők
 
 A kiválasztott fában a jellemzők fontossága (a teljes szennyezettség-csökkenésből való
 részesedés, `feature_importance.png`):
